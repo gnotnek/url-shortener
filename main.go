@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"url-shortener/internal/handler"
+	"url-shortener/internal/store"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,7 +16,17 @@ func main() {
 		})
 	})
 
-	err := r.Run(":8080")
+	r.POST("/shorten", func(c *gin.Context) {
+		handler.CreateShortUrl(c)
+	})
+
+	r.GET("/:shortUrl", func(c *gin.Context) {
+		handler.HandleShortUrlRedirect(c)
+	})
+
+	store.InitializeStore()
+
+	err := r.Run(":9808")
 	if err != nil {
 		panic(fmt.Sprintf("Failed to start the web server - Error: %v", err))
 	}
